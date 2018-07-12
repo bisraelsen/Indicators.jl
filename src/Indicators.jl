@@ -12,7 +12,7 @@ export
     crossover, crossunder,
     renko,
     maxima, minima, support, resistance,
-    rescaled_range, hurst_exponent
+    rescaled_range, hurst_exponent, hurst
 
 include("chaos.jl")
 include("ma.jl")

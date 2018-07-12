@@ -57,3 +57,30 @@ function hurst_exponent(X::Vector{Float64};
     end
     return beta, log_x, log_y
 end
+
+
+function hurst(X::Vector{Float64}; n::Int=10, cumulative::Bool=true, args...)
+    N = size(X,1)
+    out = zeros(N) * NaN
+    if cumulative
+        for i in n:N
+            h = hurst_exponent(x[1:n]; args...)
+            out[i] = h[1][end]
+        end
+    else
+        for i in n:N
+            h = hurst_exponent(x[i-n+1:i]; args...)
+            out[i] = h[1][end]
+        end
+    end
+    return out
+end
+
+function hurst(X::Matrix{Float64}; n::Int=10, cumulative::Bool=true, args...)
+    N, K = size(X)
+    out = zeros((N,K)) * NaN
+    @inbounds for j in 1:K
+        out[:,j] = hurst(X[:,j])
+    end
+    return out
+end

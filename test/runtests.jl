@@ -348,6 +348,14 @@ end
     @test count_nans(tmp) != N
 end
 
+# chaos / signal processing / dynamical systems functionality
+@testset "Chaos" begin
+    X = randn(N, 5)
+    x = X[,1]
+    H = hurst(X, cumulative = true)
+    @test size(H) == size(X)
+end
+
 # ==== TEMPORAL INTERACTIONS ====
 @testset "Temporal" begin
     x = TS(x)

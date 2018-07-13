@@ -5,7 +5,7 @@ function close_fun(X::TS, f::Function, flds::Vector{Symbol}; args...)
     elseif size(X,2) > 1 && has_close(X)
         return ts(f(cl(X).values; args...), X.index, flds)
     else
-        error("Must be univariate or contain Close/Settle/Last.")
+        error("Must be univariate or contain Close/Settle/Last field.")
     end
 end
 function hlc_fun(X::TS, f::Function, flds::Vector{Symbol}; args...)
@@ -107,3 +107,6 @@ resistance{V,T}(X::TS{V,T}; args...) = close_fun(X, resistance, [:Resistance]; a
 #### utils.jl ####
 crossover(x::TS, y::TS) = ts(crossover(x.values, y.values), x.index, [:CrossOver])
 crossunder(x::TS, y::TS) = ts(crossunder(x.values, y.values), x.index, [:CrossUnder])
+
+#### chaos.jl ####
+hurst(X::TS; args...) = close_fun(X, hurst, [:Hurst]; args...)

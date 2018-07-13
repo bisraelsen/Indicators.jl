@@ -567,4 +567,8 @@ end
     tmp = keltner(hlc)
     @test size(tmp, 1) == N
     @test size(tmp, 2) == 3
+    # chaos functions
+    tmp = hurst(ohlc)
+    @test size(tmp,1) == size(ohlc,1)
+    @test size(tmp,2) == 1
 end

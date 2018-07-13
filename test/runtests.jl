@@ -351,9 +351,9 @@ end
 # chaos / signal processing / dynamical systems functionality
 @testset "Chaos" begin
     X = randn(N, 5)
-    x = X[,1]
     H = hurst(X, cumulative = true)
     @test size(H) == size(X)
+    @test all(isnan.(H[1:9,:]))
 end
 
 # ==== TEMPORAL INTERACTIONS ====

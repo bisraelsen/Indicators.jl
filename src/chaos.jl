@@ -64,12 +64,12 @@ function hurst(X::Vector{Float64}; n::Int=10, cumulative::Bool=true, args...)
     out = zeros(N) * NaN
     if cumulative
         for i in n:N
-            h = hurst_exponent(x[1:n]; args...)
+            h = hurst_exponent(X[1:n]; args...)
             out[i] = h[1][end]
         end
     else
         for i in n:N
-            h = hurst_exponent(x[i-n+1:i]; args...)
+            h = hurst_exponent(X[i-n+1:i]; args...)
             out[i] = h[1][end]
         end
     end

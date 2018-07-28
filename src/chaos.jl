@@ -32,7 +32,7 @@ Estimate the Hurst exponent of a time series.
 * Kaplan 2003, "Estimating the Hurst Exponent", http://www.bearcave.com/misl/misl_tech/wavelets/hurst/index.html#WaveletsAndRS
 """ ->
 function hurst_exponent(X::Vector{Float64};
-                        t::AbstractVector{Int} = [2^i for i in 1:floor(Int, log(size(X,1)) / log(2))],
+                        t::AbstractVector{Int} = 2:size(X,1),
                         c::Float64 = 1.0,
                         intercept::Bool = true,
                         seed::Int = 0)
@@ -49,7 +49,7 @@ function hurst_exponent(X::Vector{Float64};
         y[i] = rescaled_range(Z)
     end
     # fit the poiiwer law to the data
-    log_x = intercept ? [ones(length(x)) log2.(x)] : log2.(x)
+    log_x = intercept ? [ones(Float64, length(x)) log2.(x)] : log2.(x)
     log_y = log2.(y)
     beta = log_x \ log_y
     if beta[end] < 0 || beta[end] > 1
@@ -59,7 +59,7 @@ function hurst_exponent(X::Vector{Float64};
 end
 
 
-function hurst(X::Vector{Float64}; n::Int=10, cumulative::Bool=true, args...)
+function hurst(X::Vector{Float64}; n::Int=10, cumulative::Bool=false, args...)
     N = size(X,1)
     out = zeros(N) * NaN
     if cumulative
@@ -76,7 +76,7 @@ function hurst(X::Vector{Float64}; n::Int=10, cumulative::Bool=true, args...)
     return out
 end
 
-function hurst(X::Matrix{Float64}; n::Int=10, cumulative::Bool=true, args...)
+function hurst(X::Matrix{Float64}; n::Int=10, cumulative::Bool=false, args...)
     N, K = size(X)
     out = zeros((N,K)) * NaN
     @inbounds for j in 1:K

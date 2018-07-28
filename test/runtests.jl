@@ -351,7 +351,7 @@ end
 # chaos / signal processing / dynamical systems functionality
 @testset "Chaos" begin
     X = randn(N, 5)
-    H = hurst(X, cumulative = true)
+    H = hurst(X)
     @test size(H) == size(X)
     @test all(isnan.(H[1:9,:]))
 end

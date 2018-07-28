@@ -37,7 +37,6 @@ Estimate the Hurst exponent of a time series.
 * Kaplan 2003, "Estimating the Hurst Exponent", http://www.bearcave.com/misl/misl_tech/wavelets/hurst/index.html#WaveletsAndRS
 """ ->
 function hurst_exponent(X::Vector{Float64};
-                        #  t::AbstractVector{Int} = 2:size(X,1),
                         t::AbstractVector{Int} = [2^i for i in 1:floor(Int, log(size(X,1)) / log(2))],
                         intercept::Bool = true,
                         args...)::Float64
@@ -52,24 +51,17 @@ function hurst_exponent(X::Vector{Float64};
 end
 
 
-function hurst(X::Vector{Float64}; n::Int=10, cumulative::Bool=false, args...)
+function hurst(X::Vector{Float64}; n::Int=10, args...)
     N = size(X,1)
     out = zeros(N) * NaN
-    if cumulative
-        for i in n:N
-            h = hurst_exponent(X[1:n]; args...)
-            out[i] = h
-        end
-    else
-        for i in n:N
-            h = hurst_exponent(X[i-n+1:i]; args...)
-            out[i] = h
-        end
+    for i in n:N
+        h = hurst_exponent(X[i-n+1:i]; args...)
+        out[i] = h
     end
     return out
 end
 
-function hurst(X::Matrix{Float64}; n::Int=10, cumulative::Bool=false, args...)
+function hurst(X::Matrix{Float64}; n::Int=10, args...)
     N, K = size(X)
     out = zeros((N,K)) * NaN
     @inbounds for j in 1:K

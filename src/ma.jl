@@ -79,7 +79,7 @@ end
 Double exponential moving average (DEMA)
 """
 function dema(x::Array{Float64}; n::Int64=10, alpha=2.0/(n+1), wilder::Bool=false)
-    return 2.0 * ema(x, n=n, alpha=alpha, wilder=wilder) - 
+    return 2.0 * ema(x, n=n, alpha=alpha, wilder=wilder) -
         ema(ema(x, n=n, alpha=alpha, wilder=wilder),
             n=n, alpha=alpha, wilder=wilder)
 end
@@ -90,7 +90,7 @@ end
 Triple exponential moving average (TEMA)
 """
 function tema(x::Array{Float64}; n::Int64=10, alpha=2.0/(n+1), wilder::Bool=false)
-    return 3.0 * ema(x, n=n, alpha=alpha, wilder=wilder) - 
+    return 3.0 * ema(x, n=n, alpha=alpha, wilder=wilder) -
         3.0 * ema(ema(x, n=n, alpha=alpha, wilder=wilder),
                   n=n, alpha=alpha, wilder=wilder) +
         ema(ema(ema(x, n=n, alpha=alpha, wilder=wilder),
@@ -165,16 +165,18 @@ function mama(x::Array{Float64}; fastlimit::Float64=0.5, slowlimit::Float64=0.05
     alpha = 0.0
     a = 0.0962
     b = 0.5769
+    c = 0.075
+    d = 0.54
     @inbounds for i = 13:n
         # Smooth and detrend price movement ====================================
         smooth_7 = (4*x[i] + 3*x[i-1] + 2*x[i-2] + x[i-3]) * 0.1
-        detrend_7 = (0.0962*smooth_7+0.5769*smooth_5-0.5769*smooth_3-0.0962*smooth_1) * (0.075*per_1+0.54)
+        detrend_7 = (a*smooth_7+b*smooth_5-b*smooth_3-a*smooth_1) * (c*per_1+d)
         # Compute InPhase and Quandrature components ===========================
-        Q1_7 = (0.0962*detrend_7+0.5769*detrend_5-0.5769*detrend_3-0.0962*detrend_1) * (0.075*per_1+0.54)
+        Q1_7 = (a*detrend_7+b*detrend_5-b*detrend_3-a*detrend_1) * (c*per_1+d)
         I1_7 = detrend_4
         # Advance phase of I1 and Q1 by 90 degrees =============================
-        jQ = (0.0962*Q1_7+0.5769*Q1_5-0.5769*Q1_3-0.0962*Q1_1) * (0.075*per_1+0.54)
-        jI = (0.0962*I1_7+0.5769*I1_5-0.5769*I1_3-0.0962*I1_1) * (0.075*per_1+0.54)
+        jQ = (a*Q1_7+b*Q1_5-b*Q1_3-a*Q1_1) * (c*per_1+d)
+        jI = (a*I1_7+b*I1_5-b*I1_3-a*I1_1) * (c*per_1+d)
         # Phasor addition for 3 bar averaging ==================================
         Q2_2 = Q1_7 + jI
         I2_2 = I1_7 - jQ
